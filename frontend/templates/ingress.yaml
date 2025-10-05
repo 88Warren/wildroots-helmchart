@@ -16,7 +16,6 @@ spec:
   tls: 
     - hosts:
       - {{ .Values.webserver.host | quote }}
-      - {{ .Values.api.host | quote }}
       secretName: wildroots-ssl
   rules:
   - host: {{ .Values.webserver.host | quote }}
