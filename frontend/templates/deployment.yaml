@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.webserver.applicationType }}
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/name: {{ .Values.webserver.applicationType }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}-deployment
+    meta.helm.sh/release-namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.webserver.applicationType }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: frontend
+        app.kubernetes.io/instance: wildroots-frontend
+    spec:
+      containers:
+      - name: {{ .Values.webserver.applicationType }}
+        image: {{ .Values.webserver.image.repository }}:{{ .Values.webserver.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.webserver.port }}
+          name: http
+          protocol: TCP
+        resources:
+          requests:
+            memory: "96Mi"
+            cpu: "150m"
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+
+        volumeMounts:
+        - name: frontend-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-cache
+          mountPath: /var/cache/nginx
+        - name: nginx-run
+          mountPath: /var/run
+      volumes:
+      - name: frontend-config
+        configMap:
+          name: {{ .Release.Name }}-configmap
+      - name: nginx-cache
+        emptyDir: {}
+      - name: nginx-run
+        emptyDir: {}  

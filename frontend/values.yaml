@@ -1,0 +1,18 @@
+namespace: wildroots
+env: production
+allowedOrigin: https://www.wildrootskitchenandbar.co.uk,https://wildrootskitchenandbar.co.uk
+replicaCount: 1
+image:
+  pullPolicy: Always
+storage:
+  storageClass: standard
+webserver:
+  image:
+    repository: index.docker.io/lmwcode/wildroots-frontend
+    tag: v.<+pipeline.sequenceId>
+  port: 5052
+  type: NodePort
+  host: www.wildrootskitchenandbar.co.uk
+  path: /
+  pathType: Prefix
+  applicationType: frontend

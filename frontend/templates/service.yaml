@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}-service
+    meta.helm.sh/release-namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    app: {{ .Values.webserver.applicationType }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  type: {{ .Values.webserver.type }}
+  ports:
+  - port: {{ .Values.webserver.port }}
+    targetPort: {{ .Values.webserver.port }}
