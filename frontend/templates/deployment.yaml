@@ -13,6 +13,7 @@ metadata:
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  progressDeadlineSeconds: 600
   selector:
     matchLabels:
       app: {{ .Values.webserver.applicationType }}
@@ -20,8 +21,8 @@ spec:
   template:
     metadata:
       labels:
-        app: frontend
-        app.kubernetes.io/instance: wildroots-frontend
+        app: {{ .Values.webserver.applicationType }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ .Values.webserver.applicationType }}
@@ -38,5 +39,19 @@ spec:
           limits:
             memory: "128Mi"
             cpu: "250m"
-
-        # No volume mounts needed for Apache + PHP setup  
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3  
