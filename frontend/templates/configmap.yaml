@@ -9,26 +9,9 @@ metadata:
     meta.helm.sh/release-name: {{ .Release.Name }}-configmap
     meta.helm.sh/release-namespace: {{ .Values.namespace }}
 data:
-  nginx.conf: |
-    events {}
-    http {
-      server {
-        listen 5060;
-        server_name wildrootskitchenandbar.co.uk www.wildrootskitchenandbar.co.uk;
-        include       /etc/nginx/mime.types;
-        default_type  application/octet-stream;
-
-        location / {
-          root /usr/share/nginx/html;
-          index index.html;
-          access_log off;
-          try_files $uri $uri/ /index.html;
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-          root /usr/share/nginx/html;
-          internal;
-        }
-      }
-    }
+  # Configuration for Apache + PHP setup
+  # Apache will handle PHP processing automatically with mod_php
+  app.conf: |
+    # Application configuration
+    ServerName {{ .Values.webserver.host }}
+    DocumentRoot /var/www/html

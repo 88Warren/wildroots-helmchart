@@ -28,7 +28,7 @@ spec:
         image: {{ .Values.webserver.image.repository }}:{{ .Values.webserver.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.webserver.port }}
+        - containerPort: 80
           name: http
           protocol: TCP
         resources:
@@ -39,19 +39,4 @@ spec:
             memory: "128Mi"
             cpu: "250m"
 
-        volumeMounts:
-        - name: frontend-config
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
-        - name: nginx-cache
-          mountPath: /var/cache/nginx
-        - name: nginx-run
-          mountPath: /var/run
-      volumes:
-      - name: frontend-config
-        configMap:
-          name: {{ .Release.Name }}-configmap
-      - name: nginx-cache
-        emptyDir: {}
-      - name: nginx-run
-        emptyDir: {}  
+        # No volume mounts needed for Apache + PHP setup  
