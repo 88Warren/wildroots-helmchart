@@ -32,6 +32,17 @@ spec:
         - containerPort: 80
           name: http
           protocol: TCP
+        env:
+        - name: RECAPTCHA_SITE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: wildroots-frontend-secrets
+              key: RECAPTCHA_SITE_KEY
+        - name: RECAPTCHA_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: wildroots-frontend-secrets
+              key: RECAPTCHA_SECRET
         resources:
           requests:
             memory: "96Mi"
